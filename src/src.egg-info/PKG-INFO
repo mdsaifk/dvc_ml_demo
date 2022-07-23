@@ -1,0 +1,9 @@
+Metadata-Version: 2.1
+Name: src
+Version: 0.0.1
+Summary: A small package for dvc ML pipleine demo
+Home-page: https://github.com/mdsaifk/dvc_ml_demo
+Author: mdsaifk
+Author-email: mdsaifkhan200@gmail.com
+License: GNU
+Requires-Python: >=3.7
