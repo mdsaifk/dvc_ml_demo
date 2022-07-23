@@ -1,5 +1,6 @@
 
-data_source: https://archive.ics.uci.edu/ml/machine-learning-databases/wine/wine.data
+data_source: http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-red.csv
+data_source1: 'C:\\MyFile\\MLops\\dvc_ML\\data\\diabetes.csv'
 artifacts:
   artifacts_dir: artifacts
   raw_local_dir: raw_local_dir
