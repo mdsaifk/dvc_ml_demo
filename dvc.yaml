@@ -1,0 +1,9 @@
+stages:
+  load_data:
+  cmd: python stage_01_load_save.py --config=config/config.yaml
+  deps:
+    - src/utils/all_utils.py
+    - stage_01_load_save.py
+    - config/config.yaml 
+  outs:
+    - artifacts/raw_local_dir/data.csv
