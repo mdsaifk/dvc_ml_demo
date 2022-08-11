@@ -11,4 +11,4 @@ artifacts:
   test: test.csv
   
   model_dir: model_dir
-  model_filename: ElasticNet.sav
+  model_filename: ElasticNet.model
