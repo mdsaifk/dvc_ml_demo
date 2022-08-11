@@ -18,8 +18,6 @@ def split_and_save_data(config_path,params_path):
     print(raw_local_path)
 
     df = pd.read_csv(raw_local_path)
-    print(df.head())
-
     split_ratio = params['base']['test_size']
     print(split_ratio)
     random_state = params['base']['random_state']

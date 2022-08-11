@@ -1,30 +1,14 @@
 schema: '2.0'
 stages:
-  load_datassss:
-    cmd: python stage_01_load_save.py --config=config/config.yaml
-    deps:
-    - path: config/config.yaml
-      md5: 87064f8cac70c5e5665c4f57302a7abe
-      size: 267
-    - path: src/utils/all_utils.py
-      md5: 1ac9ea695bc03915fd34237c1fa6ce01
-      size: 344
-    - path: stage_01_load_save.py
-      md5: 913d5e738efd3f20656bdecd2570eadd
-      size: 1140
-    outs:
-    - path: artifacts/raw_local_dir/data.csv
-      md5: 7d814a1bda02145efe703f4e1c01847a
-      size: 93599
   split_data:
     cmd: python stage_02_split_data.py --config=config/config.yaml --params=params.yaml
     deps:
     - path: config/config.yaml
-      md5: 86540843beeb56a7570ada6aa751b2fb
-      size: 341
+      md5: 6e34e57ef573508e781258c7554a1b0c
+      size: 405
     - path: params.yaml
-      md5: 5acf1f8d316ab385549c863051044514
-      size: 44
+      md5: e18b26061a1a10513ed01899c26283e0
+      size: 111
     - path: src/utils/all_utils.py
       md5: 422b8887cfb910e0750b71983a693b87
       size: 527
@@ -39,12 +23,35 @@ stages:
     - path: artifacts/split_data_dir/train.csv
       md5: 2b956720c6efa80fdc4c77276742ef30
       size: 65525
+  Train:
+    cmd: python stage_03_train.py --config=config/config.yaml --params=params.yaml
+    deps:
+    - path: artifacts/split_data_dir/train.csv
+      md5: 2b956720c6efa80fdc4c77276742ef30
+      size: 65525
+    - path: config/config.yaml
+      md5: 6e34e57ef573508e781258c7554a1b0c
+      size: 405
+    - path: params.yaml
+      md5: e18b26061a1a10513ed01899c26283e0
+      size: 111
+    - path: src/utils/all_utils.py
+      md5: 422b8887cfb910e0750b71983a693b87
+      size: 527
+    - path: stage_03_train.py
+      md5: b532237ff63919891bdf74d3d968ccc8
+      size: 2470
+    params:
+      params.yaml:
+        base.random_state: 45
+        model_params.ElasticNet.alpha: 0.5
+        model_params.ElasticNet.l1_ratio: 0.5
   load_data:
     cmd: python stage_01_load_save.py --config=config/config.yaml
     deps:
     - path: config/config.yaml
-      md5: 86540843beeb56a7570ada6aa751b2fb
-      size: 341
+      md5: 6e34e57ef573508e781258c7554a1b0c
+      size: 405
     - path: src/stage_01_load_save.py
       md5: 913d5e738efd3f20656bdecd2570eadd
       size: 1140
