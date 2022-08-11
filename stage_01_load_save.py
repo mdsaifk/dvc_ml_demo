@@ -1,4 +1,3 @@
-from fsutil import create_dir
 from src.utils.all_utils import read_yaml,create_directory
 import argparse
 import pandas as pd
