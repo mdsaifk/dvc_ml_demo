@@ -46,6 +46,10 @@ stages:
         base.random_state: 45
         model_params.ElasticNet.alpha: 0.5
         model_params.ElasticNet.l1_ratio: 0.5
+    outs:
+    - path: artifacts/model_dir/ElasticNet.model
+      md5: 7e0ed25e40a53443249bdff137be5f1d
+      size: 1316
   load_data:
     cmd: python stage_01_load_save.py --config=config/config.yaml
     deps:
