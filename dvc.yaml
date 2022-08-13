@@ -31,5 +31,19 @@ stages:
       - base.random_state
       - model_params.ElasticNet.alpha
       - model_params.ElasticNet.l1_ratio
+    outs:
+      - artifacts/model_dir/ElasticNet.model
+
+  Evaluate:
+    cmd: python stage_04_evaluate.py --config=config/config.yaml --params=params.yaml
+    deps: 
+      - stage_04_evaluate.py
+      - artifacts/split_data_dir/test.csv
+      - artifacts/model_dir/ElasticNet.model
+      - src/utils/all_utils.py
+      - config/config.yaml
+      - params.yaml
+    outs:
+      - artifacts/report_dir/reports.json
 
 

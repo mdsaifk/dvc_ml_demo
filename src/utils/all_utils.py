@@ -1,5 +1,6 @@
 from operator import index
 import yaml
+import json
 import os
 
 
@@ -18,3 +19,9 @@ def create_directory(dirs: list):
 def save_local_df(data,data_path, index_status = False):
     data.to_csv(data_path,index = index_status)
     print(f"the data save at {data_path}")
+
+
+def save_reports(reports: dict(),report_path: str,indentation =4):
+    with open (report_path ,'w') as f:
+        json.dump(reports,f,indent = indentation)
+    print(f"report are saved at {report_path}")

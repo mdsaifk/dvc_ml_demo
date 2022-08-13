@@ -1,66 +1,65 @@
 from sklearn.model_selection import train_test_split
-from src.utils.all_utils import read_yaml,create_directory, save_local_df
+from src.utils.all_utils import read_yaml,create_directory, save_local_df,save_reports
 from sklearn.linear_model import ElasticNet
 import argparse
 import pandas as pd
 import joblib
 import os
-import pickle
+from sklearn.metrics import mean_squared_error,mean_absolute_error,r2_score
+import numpy as np
 
-def train(config_path,params_path):
+def evaluate_metrics(actual_value,predicted_value):
+    rmse = np.sqrt(mean_squared_error(actual_value,predicted_value))
+    mae = mean_absolute_error(actual_value,predicted_value)
+    r2 = r2_score(actual_value,predicted_value)
+    return rmse,mae,r2
+
+def evaluation(config_path,params_path):
     config = read_yaml(config_path)
     params = read_yaml(params_path)
 
     artifacts_dir = config['artifacts']['artifacts_dir']
     split_data_dir = config['artifacts']['split_data_dir']
 
-    train_data_filename = config['artifacts']['train']
+    test_data_filename = config['artifacts']['test']
 
-    train_data_path = os.path.join(artifacts_dir,split_data_dir,train_data_filename)
+    test_data_path = os.path.join(artifacts_dir,split_data_dir,test_data_filename)
 
-    train_data = pd.read_csv(train_data_path)   # load the training data via path directory
-    
-    train_y = train_data["quality"]
-    train_x = train_data.drop("quality",axis = 1)
+    test_data = pd.read_csv(test_data_path)
 
-    random_state = params['base']['random_state']
-    alpha =  params['model_params']['ElasticNet']['alpha']
-    l1_ratio =  params['model_params']['ElasticNet']['l1_ratio']
-    
-    lr = ElasticNet(alpha = alpha,l1_ratio = l1_ratio,random_state = random_state)
-    lr.fit(train_x,train_y)
-    
+
+    test_y = test_data["quality"]
+    test_x = test_data.drop("quality",axis = 1)
 
     model_dir =  config['artifacts']['model_dir']
+    model_filename = config['artifacts']['model_filename']# for joining the artifacts directory 
+    model_path = os.path.join(artifacts_dir,model_dir,model_filename)
 
-    model_dir =  os.path.join(artifacts_dir,model_dir)   # for joining the artifacts directory 
 
-    model_filename = config['artifacts']['model_filename']
-    model_path = os.path.join(model_dir,model_filename)
-
-    create_directory([model_dir])
+    print("model_filename",model_path)
+    loaded_model = joblib.load(open(model_path, 'rb'))
+    result = loaded_model.score(test_x,test_y)
     
-    # pickle.dump(lr, open(model_path, 'wb'))
-    joblib.dump(lr ,model_path)
-    print("done")
+    predicted_value = loaded_model.predict(test_x)
 
-    # ##testing
-  
-    # test_data_filename = config['artifacts']['test']
+    rmse , mae,r2 = evaluate_metrics(test_y,predicted_value)
 
-    # test_data_path = os.path.join(artifacts_dir,split_data_dir,test_data_filename)
+    report_dir = config['artifacts']['report_dir']
+    reports_filename = config['artifacts']['reports']
+    report_dir_path = os.path.join(artifacts_dir,report_dir)
 
-    # test_data = pd.read_csv(test_data_path)
+    create_directory([report_dir_path])
+    
+    report_dir_filepath = os.path.join(report_dir_path,reports_filename)
 
-    # test_y = test_data["quality"]
-    # test_x = test_data.drop("quality",axis = 1)
 
-    # model_pathss = config['artifacts']['model_filename']
+    # reports_file_path = os.path.join(report_dir_path)
 
-    # print("model_filename",model_pathss)
-    # loaded_model = pickle.load(open(model_pathss, 'rb'))
-    # result = loaded_model.score(test_x,test_y)
-    # print(result)
+    reports={"rmse": rmse,
+                  "mae":mae,
+                  "r2":r2}
+
+    save_reports(reports,report_dir_filepath)
     
 if __name__ == '__main__':
     args = argparse.ArgumentParser()
@@ -71,5 +70,5 @@ if __name__ == '__main__':
     print(parsed_args.config)
 
 
-    train(config_path = parsed_args.config,params_path = parsed_args.params)
+    evaluation(config_path = parsed_args.config,params_path = parsed_args.params)
 

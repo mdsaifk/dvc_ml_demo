@@ -1,5 +1,5 @@
 from sklearn.model_selection import train_test_split
-from src.utils.all_utils import read_yaml,create_directory, save_local_df
+from src.utils.all_utils import read_yaml,create_directory, save_local_df,save_reports
 from sklearn.linear_model import ElasticNet
 import argparse
 import pandas as pd
@@ -44,8 +44,22 @@ def evaluation(config_path,params_path):
 
     rmse , mae,r2 = evaluate_metrics(test_y,predicted_value)
 
-    print("rmse:- ",rmse,"mae:- ",mae, "r2:-", r2)
+    report_dir = config['artifacts']['report_dir']
+    reports_filename = config['artifacts']['reports']
+    report_dir_path = os.path.join(artifacts_dir,report_dir)
 
+    create_directory([report_dir_path])
+    
+    report_dir_filepath = os.path.join(report_dir_path,reports_filename)
+
+
+    # reports_file_path = os.path.join(report_dir_path)
+
+    reports={"rmse": rmse,
+                  "mae":mae,
+                  "r2":r2}
+
+    save_reports(reports,report_dir_filepath)
     
 if __name__ == '__main__':
     args = argparse.ArgumentParser()
